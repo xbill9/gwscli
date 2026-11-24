@@ -1,0 +1,55 @@
+# Captured 2026-11-24, gwscli 1.0.6.1026726559, OAuth client in a project enrolled in the Workspace Developer Preview. Shapes only; no content.
+$ gwscli auth login --bundle=readonly drive calendar gmail docs sheets tasks "drive list_recent_files" "drive search_files"   # requested scopes:
+drive.readonly drive.metadata.readonly calendar.events.readonly calendar.readonly gmail.readonly gmail.messages.readonly gmail.labels.readonly documents.readonly spreadsheets.readonly tasks.readonly  (no drive.file)
+
+$ gwscli auth login (11 named read commands)   # requested scopes:
+drive.metadata.readonly drive.readonly drive.file calendar.readonly calendar.events.readonly gmail.messages.readonly gmail.labels.readonly tasks.readonly documents.readonly spreadsheets.readonly
+Error on an unapproved login: Error: authentication timed out after 5m0s
+
+$ gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets | jq -c '<top-level keys, arrays as lengths>'
+{"files":"array[5]","nextPageToken":"string"}
+first item keys:
+["capabilities","createdTime","downloadRestriction","etag","fileSize","id","inheritedPermissionsDisabled","mimeType","modifiedTime","owner","parentId","readOnly","resourceUri","starred","title","trashed","viewUrl","viewedByMeTime","writersCanShare"]
+
+$ gwscli drive search_files --query="title contains 'a'" | jq -c '<top-level keys, arrays as lengths>'
+{"files":"array[5]","nextPageToken":"string"}
+first item keys:
+["capabilities","contentSnippet","createdTime","downloadRestriction","etag","fileSize","id","inheritedPermissionsDisabled","mimeType","modifiedTime","owner","parentId","readOnly","resourceUri","starred","title","trashed","viewUrl","viewedByMeTime","writersCanShare"]
+
+$ gwscli calendar list_events | jq -c '<top-level keys, arrays as lengths>'
+{"summary":"string","updated":"string","timeZone":"string","accessRole":"string","defaultReminders":"array[1]","events":"array[6]"}
+first item keys:
+["attendees","conferenceData","created","creator","description","end","eventType","htmlLink","id","location","organizer","originalStartTime","recurringEventId","start","status","summary","updated","useDefaultReminders"]
+
+$ gwscli gmail search_threads | jq -c '<top-level keys, arrays as lengths>'
+{"threads":"array[20]","nextPageToken":"string","resultCountEstimate":"string"}
+first item keys:
+["id","messageCount","messages","viewUrl"]
+
+$ gwscli gmail list_labels | jq -c '<top-level keys, arrays as lengths>'
+{"labels":"array[43]"}
+first item keys:
+["labelId","labelListVisibility","labelType","messageListVisibility","messagesTotal","messagesUnread","name","threadsTotal","threadsUnread"]
+
+$ gwscli tasks list_tasks | jq -c '<top-level keys, arrays as lengths>'
+{"tasks":"array[144]"}
+first item keys:
+["completed","deadlineDate","deleted","description","id","lastModified","link","position","scheduledDate","taskListId","timeZone","title"]
+
+$ gwscli gmail list_labels | jq -r '.labels | group_by(.labelType)[] | "\(.[0].labelType) \(length)"'
+SYSTEM 14
+USER 29
+
+$ gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets | jq -r '.files[].mimeType' | sort | uniq -c
+      2 application/vnd.google-apps.document
+      3 application/vnd.google-apps.presentation
+
+# Wall-clock per command, first run after sign-in (date +%s.%N around each call), bytes = stdout size
+drive-recent   rc=0 1.09s bytes=5713
+drive-search   rc=0 1.81s bytes=32448
+cal-list       rc=0 2.19s bytes=2560
+cal-events     rc=0 0.66s bytes=21495
+gmail-threads  rc=0 1.21s bytes=31665
+gmail-labels   rc=0 0.59s bytes=12641
+tasks-lists    rc=0 0.55s bytes=281
+tasks          rc=0 1.04s bytes=54380

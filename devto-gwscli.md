@@ -335,52 +335,71 @@ gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets
 Error: failed to obtain token source: no valid cached token found. Run `gwscli auth login drive list_recent_files` before rerunning this command
 ```
 
-Sign in per action for Drive. Logins add to the cached grant, so the earlier scopes stay:
+The bundle filters out `drive.file` even when Drive commands are named next to it. Sign in per command, without `--bundle`. Logins add to the cached grant, so earlier scopes stay:
 
 ```shell
 gwscli auth login "drive list_recent_files" "drive search_files"
 ```
 
-`drive.file` covers only files the app creates or opens, so the grant stays narrow.
+`drive.file` covers only files the app creates or opens, so the grant stays narrow. `gwscli auth login --print-scope-only <commands>` prints the scopes a sign-in will request, without opening anything. A sign-in that is not approved within five minutes ends with `Error: authentication timed out after 5m0s`.
 
 ---
 
 #### Step 8 — Run Commands and Parse the Output
 
-Lists and records come back as JSON on stdout, so they pipe into `jq`. This example is from the README:
+Lists and records come back as JSON on stdout, so they pipe into `jq`. Two counts from a signed-in account:
 
 ```shell
-gwscli drive search_files --query="title contains 'Report'" | jq '.files[] | {title: .title, id: .id}'
+gwscli gmail list_labels | jq -r '.labels | group_by(.labelType)[] | "\(.[0].labelType) \(length)"'
 ```
+
+```text
+SYSTEM 14
+USER 29
+```
+
+```shell
+gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets | jq -r '.files[].mimeType' | sort | uniq -c
+```
+
+```text
+      2 application/vnd.google-apps.document
+      3 application/vnd.google-apps.presentation
+```
+
+Each response has a fixed top level. Read with `jq 'keys'`, arrays shown as their length:
+
+| Command | Top level | Fields per item |
+| :--- | :--- | :--- |
+| `drive list_recent_files --pageSize 5` | `files[5]`, `nextPageToken` | `id`, `title`, `mimeType`, `modifiedTime`, `owner`, `viewUrl` and 13 more |
+| `drive search_files` | `files[5]`, `nextPageToken` | the same, plus `contentSnippet` |
+| `calendar list_events` | `events[]`, `summary`, `timeZone`, `accessRole`, `defaultReminders` | `start`, `end`, `summary`, `attendees`, `conferenceData`, `htmlLink` and more |
+| `gmail search_threads` | `threads[20]`, `nextPageToken`, `resultCountEstimate` | `id`, `messageCount`, `messages`, `viewUrl` |
+| `gmail list_labels` | `labels[]` | `labelId`, `name`, `labelType`, `messagesUnread`, `threadsTotal` and more |
+| `tasks list_tasks` | `tasks[]` | `id`, `title`, `completed`, `deadlineDate`, `scheduledDate`, `taskListId` and more |
+
+Gmail search returns 20 threads per page by default. Each response returned in 0.55 to 2.19 seconds on this machine. Every Drive file and Gmail thread carries a `viewUrl`, so an agent can hand back a link to the item.
 
 Document content, such as `docs read_doc`, comes back as Markdown text, which goes to a file or a pager. Utility commands print plain text.
 
-A typical read-only agent session needs four sign-ins and no write scopes:
-
-```shell
-gwscli auth login "drive list_recent_files" "drive read_file_content" \
-  "calendar list_events" "gmail search_threads"
-gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets
-gwscli calendar list_events
-```
-
 ---
 
-#### 🔎 Tip: Day One Still Asks for the Developer Preview
+#### 🔎 Tip: The OAuth Client's Project Decides Access
 
-On November 24, 2026, with a personal-mode project, every MCP API enabled and the scopes granted, Calendar, Gmail and Tasks answered:
+The Google Cloud project that owns the OAuth client is the project Google checks, whatever `gcloud config` says. On November 24, 2026, the same account and the same scopes gave two different results:
+
+| OAuth client in | Calendar, Gmail, Tasks | Drive |
+| :--- | :--- | :--- |
+| a new personal-mode project | ❌ Developer Preview required | ❌ `The caller does not have permission` |
+| a project enrolled in the Developer Preview | 🟢 data returned | 🟢 data returned |
+
+The personal-mode project's refusal reads:
 
 ```text
 Access to this tool requires that your Google Cloud project (<project-number>) is enrolled in the Google Workspace Developer Preview Program. Please see https://developers.google.com/workspace/preview
 ```
 
-Drive, with `drive.file` added, answered:
-
-```text
-The caller does not have permission
-```
-
-The announcement gives the rollout as two weeks. Until it reaches your project, enroll it in the Developer Preview Program, and on a Workspace account check that an admin allows agent clients under **Security > API Controls**. The CLI side, from install to granted scopes, works today.
+The announcement gives the rollout as two weeks. Until it reaches a project, create the Desktop client in a project that is enrolled in the Developer Preview, at `console.cloud.google.com/auth/clients/create?project=<project-id>`. That project also needs the nine `*mcp` APIs from Step 6 enabled.
 
 ---
 
@@ -486,12 +505,13 @@ The goal of this article was to install the Google Workspace CLI and show how to
 - 🟢 Help, scopes and response schemas all work with no account signed in.
 - 🟢 `gwscli skills install` adds a ready-made agent skill for Claude Code or any agent that reads `SKILL.md` files.
 - ⚠️ Sign-in needs a Desktop OAuth client marked for AI agents and a browser on the same machine; over SSH, forward the callback port.
-- ⚠️ `--bundle=readonly` omits `drive.file`, which Drive's list and search commands require; sign in per action for Drive.
-- ❌ On launch day, Calendar, Gmail and Tasks asked for Developer Preview enrollment and Drive returned a permission error, with every API enabled and every scope granted.
+- ⚠️ `--bundle=readonly` omits `drive.file`, which Drive's list and search commands require; sign in per command instead.
+- 🟢 Signed in with an OAuth client in a Developer Preview project, Drive, Calendar, Gmail and Tasks all returned JSON, each in 0.55 to 2.19 seconds.
+- ❌ With a client in a new personal-mode project on launch day, Calendar, Gmail and Tasks asked for Developer Preview enrollment and Drive returned a permission error.
 - ⚠️ Telemetry is on until `gwscli logging off`.
 - ❌ No auto-update; re-run the installer for new versions.
 
-Scope: one Linux x86_64 machine, `gwscli` version 1.0.6.1026726559, one personal-mode Google Cloud project, run on November 24, 2026, the day of the announcement. Install, help, scopes, schema, skills, logging, `auth setup`, both sign-ins and the error responses were run and their output is shown above. No data command returned Workspace content on that day, so the `jq` example and the session in Step 8 come from the README and help text, as does the token mode in Step 9. Usage-tier facts are from Google's Workspace Updates post of the same date.
+Scope: one Linux x86_64 machine, `gwscli` version 1.0.6.1026726559, one Google Workspace account, OAuth clients in two Google Cloud projects (a new personal-mode project and a project enrolled in the Workspace Developer Preview), run once on November 24, 2026, the day of the announcement. Every command shown with output was run, and the response tables list field names and counts only. Sheets, Docs and the token mode in Step 9 come from the help text and README and were not run. Usage-tier facts are from Google's Workspace Updates post of the same date.
 
 The strategy for using the Google Workspace CLI was validated with an incremental step by step approach.
 
