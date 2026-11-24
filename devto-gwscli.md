@@ -32,6 +32,14 @@ https://github.com/xbill9/gwscli
 
 The mapping comes from the README the installer drops in `~/.gwscli/README.md`. The action names match the tool names of the Workspace MCP servers, such as `drive list_recent_files` and `gmail search_threads`, so a workflow written against the CLI reads the same as one written against MCP.
 
+The same servers can be connected to an agent directly over MCP. Earlier articles in this series set them up for each agent:
+
+- [MCP Configuration for Google Workspace with Gemini CLI](https://dev.to/gde/mcp-configuration-for-google-workspace-with-gemini-cli-3nd2)
+- [MCP Configuration for Google Workspace with Antigravity CLI](https://dev.to/gde/mcp-configuration-for-google-workspace-with-antigravity-cli-3f34)
+- [MCP Configuration for Google Workspace with Claude Code](https://dev.to/gde/mcp-configuration-for-google-workspace-with-claude-code-11om)
+- [Debugging Claude Code and Google MCP Quirks](https://dev.to/gde/debugging-claude-code-and-google-mcp-quirks-8bd)
+- [Universal Search MCP for Google Workspace with Claude Code](https://dev.to/gde/universal-search-mcp-for-google-workspace-with-claude-code-3ilm)
+
 ---
 
 #### At This Point You Should Have…
@@ -522,4 +530,9 @@ The strategy for using the Google Workspace CLI was validated with an incrementa
 - Google Workspace CLI guide: https://developers.google.com/workspace/guides/workspace-cli
 - Workspace Updates, MCP servers, CLI and usage tiers: https://workspaceupdates.googleblog.com/2026/11/mcp-servers-cli-standardized-usage-tiers-now-available.html
 - Create OAuth client credentials: https://developers.google.com/workspace/guides/create-credentials
+- MCP Configuration for Google Workspace with Gemini CLI: https://dev.to/gde/mcp-configuration-for-google-workspace-with-gemini-cli-3nd2
+- MCP Configuration for Google Workspace with Antigravity CLI: https://dev.to/gde/mcp-configuration-for-google-workspace-with-antigravity-cli-3f34
+- MCP Configuration for Google Workspace with Claude Code: https://dev.to/gde/mcp-configuration-for-google-workspace-with-claude-code-11om
+- Debugging Claude Code and Google MCP Quirks: https://dev.to/gde/debugging-claude-code-and-google-mcp-quirks-8bd
+- Universal Search MCP for Google Workspace with Claude Code: https://dev.to/gde/universal-search-mcp-for-google-workspace-with-claude-code-3ilm
 - Repository for this article: https://github.com/xbill9/gwscli
