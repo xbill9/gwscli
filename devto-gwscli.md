@@ -298,7 +298,50 @@ gwscli auth login chat --bundle=readonly                  # read-only scopes for
 gwscli auth login                                         # everything
 ```
 
-Each prints a URL. Open it in the browser on the same machine, approve, and the CLI caches the token. `gwscli auth status` shows who is signed in and `gwscli auth refresh` renews the token.
+Each prints a URL. Open it in the browser on the same machine, approve, and the CLI caches the token. `gwscli auth status` lists the granted scopes and `gwscli auth refresh` renews the token.
+
+A read-only sign-in across six services:
+
+```shell
+gwscli auth login --bundle=readonly drive calendar gmail docs sheets tasks
+gwscli auth status
+```
+
+```text
+Granted the following scopes:
+  - https://www.googleapis.com/auth/calendar.events.readonly
+  - https://www.googleapis.com/auth/calendar.readonly
+  - https://www.googleapis.com/auth/documents.readonly
+  - https://www.googleapis.com/auth/drive.metadata.readonly
+  - https://www.googleapis.com/auth/drive.readonly
+  - https://www.googleapis.com/auth/gmail.labels.readonly
+  - https://www.googleapis.com/auth/gmail.messages.readonly
+  - https://www.googleapis.com/auth/gmail.readonly
+  - https://www.googleapis.com/auth/spreadsheets.readonly
+  - https://www.googleapis.com/auth/tasks.readonly
+```
+
+---
+
+#### 🔎 Tip: The Read-Only Bundle Leaves Out `drive.file`
+
+The CLI checks a command's **Recommended Minimal Scopes** before calling Google, and both `drive list_recent_files` and `drive search_files` list `drive.file` there. `--bundle=readonly` grants `drive.readonly` and `drive.metadata.readonly` only, so both commands stop:
+
+```shell
+gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets
+```
+
+```text
+Error: failed to obtain token source: no valid cached token found. Run `gwscli auth login drive list_recent_files` before rerunning this command
+```
+
+Sign in per action for Drive. Logins add to the cached grant, so the earlier scopes stay:
+
+```shell
+gwscli auth login "drive list_recent_files" "drive search_files"
+```
+
+`drive.file` covers only files the app creates or opens, so the grant stays narrow.
 
 ---
 
@@ -320,6 +363,24 @@ gwscli auth login "drive list_recent_files" "drive read_file_content" \
 gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets
 gwscli calendar list_events
 ```
+
+---
+
+#### 🔎 Tip: Day One Still Asks for the Developer Preview
+
+On November 24, 2026, with a personal-mode project, every MCP API enabled and the scopes granted, Calendar, Gmail and Tasks answered:
+
+```text
+Access to this tool requires that your Google Cloud project (<project-number>) is enrolled in the Google Workspace Developer Preview Program. Please see https://developers.google.com/workspace/preview
+```
+
+Drive, with `drive.file` added, answered:
+
+```text
+The caller does not have permission
+```
+
+The announcement gives the rollout as two weeks. Until it reaches your project, enroll it in the Developer Preview Program, and on a Workspace account check that an admin allows agent clients under **Security > API Controls**. The CLI side, from install to granted scopes, works today.
 
 ---
 
@@ -425,10 +486,12 @@ The goal of this article was to install the Google Workspace CLI and show how to
 - 🟢 Help, scopes and response schemas all work with no account signed in.
 - 🟢 `gwscli skills install` adds a ready-made agent skill for Claude Code or any agent that reads `SKILL.md` files.
 - ⚠️ Sign-in needs a Desktop OAuth client marked for AI agents and a browser on the same machine; over SSH, forward the callback port.
+- ⚠️ `--bundle=readonly` omits `drive.file`, which Drive's list and search commands require; sign in per action for Drive.
+- ❌ On launch day, Calendar, Gmail and Tasks asked for Developer Preview enrollment and Drive returned a permission error, with every API enabled and every scope granted.
 - ⚠️ Telemetry is on until `gwscli logging off`.
 - ❌ No auto-update; re-run the installer for new versions.
 
-Scope: one Linux x86_64 machine, `gwscli` version 1.0.6.1026726559, installed on November 24, 2026. Install, help, scopes, schema, skills, logging and the signed-out errors were run and their output is shown above. The OAuth client, `auth login` and the data commands in Steps 7 to 9 are taken from the CLI's README and help text and were not run on this machine. Usage-tier facts are from Google's Workspace Updates post of the same date.
+Scope: one Linux x86_64 machine, `gwscli` version 1.0.6.1026726559, one personal-mode Google Cloud project, run on November 24, 2026, the day of the announcement. Install, help, scopes, schema, skills, logging, `auth setup`, both sign-ins and the error responses were run and their output is shown above. No data command returned Workspace content on that day, so the `jq` example and the session in Step 8 come from the README and help text, as does the token mode in Step 9. Usage-tier facts are from Google's Workspace Updates post of the same date.
 
 The strategy for using the Google Workspace CLI was validated with an incremental step by step approach.
 

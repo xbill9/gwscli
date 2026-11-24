@@ -1,0 +1,23 @@
+# Captured 2026-11-24, gwscli 1.0.6.1026726559. Project number redacted.
+$ gwscli auth login --bundle=readonly drive calendar gmail docs sheets tasks   (then: gwscli auth status)
+Granted the following scopes:
+  - https://www.googleapis.com/auth/calendar.events.readonly
+  - https://www.googleapis.com/auth/calendar.readonly
+  - https://www.googleapis.com/auth/documents.readonly
+  - https://www.googleapis.com/auth/drive.metadata.readonly
+  - https://www.googleapis.com/auth/drive.readonly
+  - https://www.googleapis.com/auth/gmail.labels.readonly
+  - https://www.googleapis.com/auth/gmail.messages.readonly
+  - https://www.googleapis.com/auth/gmail.readonly
+  - https://www.googleapis.com/auth/spreadsheets.readonly
+  - https://www.googleapis.com/auth/tasks.readonly
+
+$ gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets   (after the readonly bundle only)
+Error: failed to obtain token source: no valid cached token found. Run `gwscli auth login drive list_recent_files` before rerunning this command
+
+$ gwscli calendar list_events
+Access to this tool requires that your Google Cloud project (<project-number>) is enrolled in the Google Workspace Developer Preview Program. Please see https://developers.google.com/workspace/preview
+
+$ gwscli auth login "drive list_recent_files" "drive search_files"   (adds drive.file)
+$ gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets
+The caller does not have permission
