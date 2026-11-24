@@ -100,7 +100,7 @@ gwscli version 1.0.6.1026726559
 NOTICES.txt  README.md
 ```
 
-The binary is 11,673,751 bytes and statically linked, so there is no runtime, package manager or virtual environment to set up. It does not update itself: re-run the installer to get a new version.
+The binary is 11,673,751 bytes and statically linked, so there is no runtime, package manager or virtual environment to set up. The binary holds the list of nine services and the `auth`, `skills` and `logging` commands. Each service's actions are fetched from its MCP server at run time, so new tools appear without a new binary (Step 3). Re-run the installer for changes to the binary itself, such as sign-in or the bundled skill.
 
 ---
 
@@ -131,7 +131,7 @@ Utility Commands:
   version     Print the version
 ```
 
-`gwscli <service> --help` lists each service's actions. Counted from that output for every service on version 1.0.6:
+`gwscli <service> --help` lists each service's actions. Counted from that output on November 24, 2026:
 
 | Service | Actions | Examples |
 | :--- | ---: | :--- |
@@ -219,7 +219,18 @@ gwscli drive list_recent_files --schema | head -5
       "properties": {},
 ```
 
-The README says the action-level `--help` queries the backend for current parameter details, so the help text tracks the MCP server's tool definitions.
+The actions, flags and schemas come from the MCP server each time the CLI runs. With the network blocked, the service list still prints and every service command fails:
+
+```shell
+HTTPS_PROXY=http://127.0.0.1:9 gwscli drive --help
+```
+
+```text
+Warning: failed to load MCP tools for server "drive": failed listing tools on server "drive": Post "https://drivemcp.googleapis.com/mcp/v1": proxyconnect tcp: dial tcp 127.0.0.1:9: connect: connection refused
+Error: service "drive" is currently unavailable; failed to generate commands from the server.
+```
+
+So the action count in the table above is a snapshot of the servers on one day. A tool Google adds to an MCP server shows up in the CLI on the next run, with no upgrade.
 
 ---
 
@@ -509,7 +520,7 @@ Granted access is also listed at myaccount.google.com/connections, and the OAuth
 The goal of this article was to install the Google Workspace CLI and show how to use it from a terminal and from an agent. The key to the solution was the CLI's own discovery: `--help`, `--show-scopes` and `--schema` describe every action before any sign-in, and sign-in then grants only the scopes those actions need. The results were:
 
 - 🟢 Install is one `curl` and `bash`, and produces a single static binary of 11,673,751 bytes (11.7 MB) on Linux x86_64. The script is 97 lines and readable before running.
-- 🟢 Version 1.0.6 exposes 69 actions across nine services, plus `auth`, `skills`, `logging`, `privacy`, `terms` and `version`.
+- 🟢 On November 24, 2026 the CLI listed 69 actions across nine services, plus `auth`, `skills`, `logging`, `privacy`, `terms` and `version`.
 - 🟢 Help, scopes and response schemas all work with no account signed in.
 - 🟢 `gwscli skills install` adds a ready-made agent skill for Claude Code or any agent that reads `SKILL.md` files.
 - ⚠️ Sign-in needs a Desktop OAuth client marked for AI agents and a browser on the same machine; over SSH, forward the callback port.
@@ -517,7 +528,7 @@ The goal of this article was to install the Google Workspace CLI and show how to
 - 🟢 Signed in with an OAuth client in a Developer Preview project, Drive, Calendar, Gmail and Tasks all returned JSON, each in 0.55 to 2.19 seconds.
 - ❌ With a client in a new personal-mode project on launch day, Calendar, Gmail and Tasks asked for Developer Preview enrollment and Drive returned a permission error.
 - ⚠️ Telemetry is on until `gwscli logging off`.
-- ❌ No auto-update; re-run the installer for new versions.
+- 🟢 Actions, flags and schemas load from the MCP servers on every run, so new tools need no upgrade. Re-run the installer only for changes to the binary itself.
 
 Scope: one Linux x86_64 machine, `gwscli` version 1.0.6.1026726559, one Google Workspace account, OAuth clients in two Google Cloud projects (a new personal-mode project and a project enrolled in the Workspace Developer Preview), run once on November 24, 2026, the day of the announcement. Every command shown with output was run, and the response tables list field names and counts only. Sheets, Docs and the token mode in Step 9 come from the help text and README and were not run. Usage-tier facts are from Google's Workspace Updates post of the same date.
 

@@ -1,0 +1,20 @@
+# 2026-11-24, gwscli 1.0.6.1026726559. Network blocked by pointing HTTPS_PROXY at a closed local port.
+$ HTTPS_PROXY=http://127.0.0.1:9 gwscli --help | sed -n "/Available Services/,/^$/p"
+Available Services:
+  calendar    Schedule meetings, check availability, and manage events
+  chat        Send messages, read conversations, and manage Chat spaces
+  docs        Read and edit Google Docs documents
+  drive       Search, upload, download, and organize Drive files
+  gmail       Search emails, read threads, manage labels, and create drafts
+  people      Search directory profiles and view personal contacts
+  sheets      Read, write, format, and analyze Sheets data
+  slides      Read and edit Slides presentations
+  tasks       Create, read, and manage Google Tasks and task lists
+
+$ HTTPS_PROXY=http://127.0.0.1:9 gwscli drive --help
+Warning: failed to load MCP tools for server "drive": failed listing tools on server "drive": Post "https://drivemcp.googleapis.com/mcp/v1": proxyconnect tcp: dial tcp 127.0.0.1:9: connect: connection refused
+Error: service "drive" is currently unavailable; failed to generate commands from the server.
+$ HTTPS_PROXY=http://127.0.0.1:9 gwscli skills install --dir ./offskills
+Installing skills to ./offskills...
+rc=0
+SKILL.md
