@@ -1,0 +1,26 @@
+Google made the Workspace CLI generally available today.
+What does it take to go from one curl command to an agent reading Gmail, Drive and Calendar?
+
+One curl command installs a single static binary. Before you sign in, it lists its own actions, the OAuth scopes each one needs and the JSON it returns.
+
+Sign-in is per command. The read-only bundle leaves out drive.file, which Drive's list and search commands require.
+
+On launch day the OAuth client's project decided access: a new personal-mode project was refused, and a project in the Workspace Developer Preview returned data.
+
+New tools arrive from the MCP servers on every run, with no upgrade.
+
+Write ups are here:
+
+dev.to:
+https://dev.to/gde/install-and-use-the-google-workspace-cli-gwscli-on-linux-from-curl-to-agent-skills-12dm
+
+Medium:
+https://medium.com/@xbill999/install-and-use-the-google-workspace-cli-gwscli-on-linux-from-curl-to-agent-skills-143220de6b27
+
+Substack:
+https://xbill9.substack.com/p/install-and-use-the-google-workspace
+
+GitHub:
+https://github.com/xbill9/gwscli
+
+#GoogleWorkspace #MCP #ClaudeCode #CLI

@@ -1,0 +1,9 @@
+# Destination URLs for the LinkedIn post. Keys are make-linkedin.py's fixed set.
+devto-gde = https://dev.to/gde/install-and-use-the-google-workspace-cli-gwscli-on-linux-from-curl-to-agent-skills-12dm
+devto-aws = SKIP
+builder = SKIP
+medium = https://medium.com/@xbill999/install-and-use-the-google-workspace-cli-gwscli-on-linux-from-curl-to-agent-skills-143220de6b27
+substack = https://xbill9.substack.com/p/install-and-use-the-google-workspace
+linkedin-article = https://www.linkedin.com/pulse/install-use-google-workspace-cli-gwscli-linux-from-curl-mclean-qrkoc/
+repo = https://github.com/xbill9/gwscli
+linkedin = https://www.linkedin.com/feed/update/urn:li:activity:7531089365020848128/

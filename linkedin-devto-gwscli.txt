@@ -1,0 +1,15 @@
+Install and Use the Google Workspace CLI: gwscli on Linux, From curl to Agent Skills
+
+A step by step guide to the generally available Google Workspace CLI: one-line install, command discovery across nine Workspace services, incremental OAuth sign-in, JSON output, and the agent skill it ships for Claude Code and other agents.
+
+What is in it:
+
+- 🟢 Install is one curl and bash, and produces a single static binary of 11,673,751 bytes (11.7 MB) on Linux x86_64. The script is 97 lines and readable before running.
+- 🟢 On November 24, 2026 the CLI listed 69 actions across nine services, plus auth, skills, logging, privacy, terms and version.
+- 🟢 Help, scopes and response schemas all work with no account signed in.
+- 🟢 gwscli skills install adds a ready-made agent skill for Claude Code or any agent that reads SKILL.md files.
+
+dev.to (Google Developer Experts): https://dev.to/gde/install-and-use-the-google-workspace-cli-gwscli-on-linux-from-curl-to-agent-skills-12dm
+Medium: https://medium.com/@xbill999/install-and-use-the-google-workspace-cli-gwscli-on-linux-from-curl-to-agent-skills-143220de6b27
+Substack: https://xbill9.substack.com/p/install-and-use-the-google-workspace
+GitHub: https://github.com/xbill9/gwscli
