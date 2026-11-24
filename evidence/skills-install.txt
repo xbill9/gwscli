@@ -1,0 +1,4 @@
+$ gwscli skills install --dir ./skills
+Installing skills to ./skills...
+$ wc -l skills/gwscli/SKILL.md
+318 skills/gwscli/SKILL.md

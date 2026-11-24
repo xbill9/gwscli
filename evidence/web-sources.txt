@@ -1,0 +1,19 @@
+# Facts read from web pages on 2026-11-24 (WebFetch). Quoted figures only.
+## https://workspaceupdates.googleblog.com/2026/11/mcp-servers-cli-standardized-usage-tiers-now-available.html
+Title: Simplifying agent access while keeping organizations in control: MCP servers, CLI, standardized usage tiers, and admin policies
+Date: November 24, 2026
+MCP servers and the Workspace CLI: generally available.
+Tiers: "Standard tier" (no cost, published usage quotas) and "Scaled tier" (higher quota).
+Tiers apply "Starting today" to Workspace APIs incl. MCP servers and CLI, "starting with Gmail, Drive, and Calendar".
+"Over 99% of active developers" are within Standard tier.
+February 1, 2027: AI agents "must use MCP to access Workspace data, rather than calling Workspace REST APIs directly"; technical enforcement begins.
+April 1, 2027: Scaled tier billing begins, charged only for usage above daily free allowances (Gmail, Calendar, Drive APIs and Workspace MCP servers).
+Rollout: "Rolling out to all in 2 weeks" (Rapid and Scheduled Release).
+Admin control: Admin console > Security > API Controls.
+No numeric quota values stated.
+## https://developers.google.com/workspace/guides/workspace-cli#install
+Windows quick install (PowerShell): iex ((New-Object Net.WebClient).DownloadString('https://dl.google.com/workspace-cli/install.ps1'))
+Supported: Linux, macOS, Windows on x86_64 or ARM64.
+Agent install prompt: curl -fsSL -O https://dl.google.com/workspace-cli/INSTALL_PROMPT.md
+The tool does not auto-update.
+## https://lnkd.in/p/gabvTCja -> LinkedIn post announcing Workspace CLI and MCP servers GA.

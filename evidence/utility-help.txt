@@ -1,0 +1,134 @@
+$ gwscli auth login --help
+Authenticate with Google Workspace by specifying the command(s) or app(s) you want to run.
+gwscli uses incremental OAuth scopes. Instead of authorizing all permissions at once,
+you authorize only the scopes required for the specific command(s) or app(s) you intend to execute.
+
+For example, to authorize read-only access to list Drive files, run:
+  gwscli auth login drive list_recent_files
+
+To authorize write access to create Drive files, run:
+  gwscli auth login drive create_file
+
+To authorize multiple commands at once, run:
+  gwscli auth login "chat search_messages" "chat send_message" "gmail search_threads"
+
+To authorize an entire application (or multiple applications), run:
+  gwscli auth login chat
+  gwscli auth login "chat" "gmail"
+
+To authorize a mix of applications and specific commands, run:
+  gwscli auth login "gmail" "chat search_messages"
+
+To authorize all commands across all applications at once, run:
+  gwscli auth login
+
+To authorize only read-only scopes for an application, run:
+  gwscli auth login chat --bundle=readonly
+
+This command will print a URL. Open the URL in your browser, log in, and grant permissions.
+
+Usage:
+  gwscli auth login [command...] [flags]
+
+Flags:
+      --bundle string      Authorize a bundle of scopes (e.g. --bundle=readonly)
+      --print-scope-only   Print the evaluated OAuth scopes required for the command and exit
+
+Global Flags:
+  -h, --help                 Print help message
+      --oauth_token string   OAuth token to authenticate requests directly
+
+$ gwscli auth setup --help
+Configure custom OAuth client credentials.
+
+To configure your own GCP project credentials, create an OAuth 2.0 client ID in the Google Cloud Console (see https://developers.google.com/workspace/guides/create-credentials#oauth-client-id), download the client JSON file, and run:
+  gwscli auth setup --oauth_client_file=/path/to/client_secret.json
+
+Usage:
+  gwscli auth setup [flags]
+
+Flags:
+      --oauth_client_file string   Path to downloaded OAuth 2.0 client JSON file
+
+Global Flags:
+  -h, --help                 Print help message
+      --oauth_token string   OAuth token to authenticate requests directly
+
+$ gwscli auth logout --help
+Log out and revoke tokens
+
+Usage:
+  gwscli auth logout [flags]
+
+Global Flags:
+  -h, --help                 Print help message
+      --oauth_token string   OAuth token to authenticate requests directly
+
+$ gwscli auth reset --help
+Reset authentication and remove custom OAuth client credentials.
+
+This command will log you out and remove the custom OAuth client file specified during 'gwscli auth setup'.
+After running this command, you will need to re-run 'gwscli auth setup' to authenticate again.
+
+Usage:
+  gwscli auth reset [flags]
+
+Global Flags:
+  -h, --help                 Print help message
+      --oauth_token string   OAuth token to authenticate requests directly
+
+$ gwscli skills install --help
+Install agent skills to a directory
+
+Usage:
+  gwscli skills install [flags]
+
+Flags:
+      --dir string   Target directory to install skills
+      --overwrite    Overwrite existing skills in the destination
+
+Global Flags:
+  -h, --help                 Print help message
+      --oauth_token string   OAuth token to authenticate requests directly
+
+$ gwscli skills list --help
+List agent skills
+
+Usage:
+  gwscli skills list [flags]
+
+Global Flags:
+  -h, --help                 Print help message
+      --oauth_token string   OAuth token to authenticate requests directly
+
+$ gwscli logging --help
+Manage telemetry and usage logging.
+
+By default, telemetry logging is enabled. You can disable or enable it at any time:
+  gwscli logging off
+  gwscli logging on
+  gwscli logging status
+
+Usage:
+  gwscli logging [on|off] [flags]
+  gwscli logging [command]
+
+Available Commands:
+  off         Disable telemetry and usage logging
+  on          Enable telemetry and usage logging
+  status      Check current telemetry logging status
+
+Global Flags:
+  -h, --help                 Print help message
+      --oauth_token string   OAuth token to authenticate requests directly
+
+Use "gwscli logging [command] --help" for more information about a command.
+
+$ gwscli skills list
+gwscli
+$ gwscli logging status
+Telemetry logging is enabled.
+$ gwscli privacy
+Privacy Policy: https://policies.google.com/privacy
+$ gwscli terms
+Terms of Service: https://developers.google.com/terms

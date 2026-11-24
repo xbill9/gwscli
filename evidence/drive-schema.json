@@ -1,0 +1,428 @@
+{
+  "$defs": {
+    "CalendarSource": {
+      "description": "Represents a Google Calendar event linked from Drive, such as a Drive Project source.",
+      "properties": {},
+      "type": "object"
+    },
+    "ChatSource": {
+      "description": "Represents a Google Chat space linked from Drive, such as a Drive Project source.",
+      "properties": {},
+      "type": "object"
+    },
+    "DownloadRestriction": {
+      "description": "Restrictions applied to downloading, printing, and copying a file.",
+      "properties": {
+        "restrictedReader": {
+          "description": "Optional. Whether download, print, and copy are restricted for readers (viewers) and commenters.",
+          "type": "boolean"
+        },
+        "restrictedWriter": {
+          "description": "Optional. Whether download, print, and copy are restricted for writers (editors). If true, download, print, and copy are also restricted for readers and commenters.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "DriveSource": {
+      "description": "Represents a Drive file or folder linked from Drive, such as a Drive Project source.",
+      "properties": {
+        "fileId": {
+          "description": "Output only. The Drive item ID.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "mimeType": {
+          "description": "Output only. The MIME type of the Drive item, if known.",
+          "readOnly": true,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "File": {
+      "description": "A file resource.",
+      "properties": {
+        "canAddChildren": {
+          "deprecated": true,
+          "description": "Deprecated: use `capabilities.canAddChildren`.",
+          "type": "boolean"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/FileCapabilities",
+          "description": "Output only. Capabilities of the file for the requester.",
+          "readOnly": true
+        },
+        "contentSnippet": {
+          "description": "Generated snippet about the content of the file.",
+          "type": "string"
+        },
+        "createdTime": {
+          "description": "The time that the file was created.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of the file.",
+          "type": "string"
+        },
+        "downloadRestriction": {
+          "$ref": "#/$defs/DownloadRestriction",
+          "description": "Optional. Restrictions applied to downloading, printing, and copying the file."
+        },
+        "etag": {
+          "description": "Output only. An opaque version identifier for the file that changes whenever the file is modified.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "externalityState": {
+          "description": "Output only. Whether the file is shared with, owned by, or created by users outside of the requester's organization. See `ExternalityState` for precedence when more than one applies. Only populated when `include_externality_state` is `true` on `GetFile`, `ListFiles`, or `SearchFiles`.",
+          "enum": [
+            "EXTERNALITY_STATE_UNSPECIFIED",
+            "SHARED_EXTERNALLY",
+            "OWNED_EXTERNALLY",
+            "CREATOR_EXTERNAL",
+            "NOT_EXTERNAL",
+            "NOT_APPLICABLE"
+          ],
+          "readOnly": true,
+          "type": "string",
+          "x-google-enum-descriptions": [
+            "The externality state is unknown.",
+            "The file is shared with users outside of the organization. It may also be owned by or created by external users.",
+            "The file is owned by a user outside of the organization, but is not shared externally. It may also be created by an external user.",
+            "The file was created by a user outside of the organization, but is neither shared externally nor owned externally.",
+            "The file is not shared with, owned by, or created by users outside of the organization.",
+            "Externality does not apply to the file, e.g. for consumer accounts."
+          ]
+        },
+        "fileExtension": {
+          "description": "The original file extension of the file, this is only populated for files with content stored in Drive.",
+          "type": "string"
+        },
+        "fileSize": {
+          "description": "The size in bytes of the file.",
+          "format": "int64",
+          "type": "string"
+        },
+        "folderProperties": {
+          "$ref": "#/$defs/FolderProperties",
+          "description": "Populated only for folders with special properties."
+        },
+        "followUps": {
+          "description": "Output only. Open follow-ups on this file for the requesting user. Empty when the user has nothing to act on.",
+          "items": {
+            "$ref": "#/$defs/FollowUp"
+          },
+          "readOnly": true,
+          "type": "array"
+        },
+        "id": {
+          "description": "The id of the file that was fetched.",
+          "type": "string"
+        },
+        "inheritedPermissionsDisabled": {
+          "description": "Whether inherited permissions are disabled on this folder. This is always false for non-folder types.",
+          "type": "boolean"
+        },
+        "lastCommentedTime": {
+          "description": "Output only. The time at which the file was last commented on. Only populated when `include_rich_metadata` is `true` on `GetFile` or `SearchFiles`.",
+          "format": "date-time",
+          "readOnly": true,
+          "type": "string"
+        },
+        "lastModifyingUserEmail": {
+          "description": "Output only. Email address of the user who last modified the file. Only populated when `include_rich_metadata` is `true` on `GetFile` or `SearchFiles`.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "lastModifyingUserName": {
+          "description": "Output only. Display name of the user who last modified the file. Only populated when `include_rich_metadata` is `true` on `GetFile` or `SearchFiles`.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "mimeType": {
+          "description": "The mime type of the file.",
+          "type": "string"
+        },
+        "modifiedTime": {
+          "description": "The most recent time at which the file was modified.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "owner": {
+          "description": "The email address of the owner of the file.",
+          "type": "string"
+        },
+        "ownerName": {
+          "description": "Output only. Display name of the owner of the file. See `owner` for the email address. Only populated when `include_rich_metadata` is `true` on `GetFile` or `SearchFiles`.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "parentId": {
+          "description": "The (optional) id of the parent of the file.",
+          "type": "string"
+        },
+        "projectMetadata": {
+          "$ref": "#/$defs/ProjectMetadata",
+          "description": "Output only. Populated only for Drive Projects (mime_type = \"application/vnd.google-apps.project\") when project details are requested. Top-level File fields describe the project item itself.",
+          "readOnly": true
+        },
+        "readOnly": {
+          "description": "Whether the content of the file is read-only (locked).",
+          "type": "boolean"
+        },
+        "readOnlyReason": {
+          "description": "The reason why the file was put into a read-only (locked) state.",
+          "type": "string"
+        },
+        "resourceUri": {
+          "description": "The resource URI of the file.",
+          "type": "string"
+        },
+        "sharedDriveId": {
+          "description": "The ID of the shared drive the file resides in. Only populated for items in shared drives.",
+          "type": "string"
+        },
+        "sharedWithMeTime": {
+          "description": "The time that the file was shared with the requester.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "shortcutDetails": {
+          "$ref": "#/$defs/ShortcutDetails",
+          "description": "Populated only for shortcut files (mimeType = \"application/vnd.google-apps.shortcut\"). Top-level File fields describe the shortcut item itself."
+        },
+        "starred": {
+          "description": "Whether the file has been starred.",
+          "type": "boolean"
+        },
+        "title": {
+          "description": "The title of the file.",
+          "type": "string"
+        },
+        "trashed": {
+          "description": "Whether the file is in the trash.",
+          "type": "boolean"
+        },
+        "viewUrl": {
+          "description": "The URL to view the file.",
+          "type": "string"
+        },
+        "viewedByMeTime": {
+          "description": "The most recent time at which the file was viewed by requester.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "visibility": {
+          "description": "Output only. Sharing visibility state of the file. Only populated when `include_rich_metadata` is `true` on `GetFile` or `SearchFiles`.",
+          "enum": [
+            "VISIBILITY_UNSPECIFIED",
+            "PUBLIC",
+            "UNLISTED",
+            "PUBLIC_TO_DOMAIN",
+            "UNLISTED_TO_DOMAIN",
+            "PRIVATE"
+          ],
+          "readOnly": true,
+          "type": "string",
+          "x-google-enum-descriptions": [
+            "Visibility is unspecified.",
+            "Anyone on the internet can find and access the item, including anonymous users.",
+            "Anyone with the link can access the item, including anonymous users.",
+            "Anyone in the owner's domain can access the item.",
+            "Anyone in the owner's domain who has the link can access the item.",
+            "The item is not shared with the link, to the domain, or to the public. Note that the item may still be shared with specific users or groups."
+          ]
+        },
+        "writersCanShare": {
+          "description": "Whether users with only writer permission can modify the file's permissions and share the file.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "FileCapabilities": {
+      "description": "Capabilities of the file for the requester.",
+      "properties": {
+        "canAddChildren": {
+          "description": "Output only. Whether the requester can add children to this folder. This is always false for non-folder types.",
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "canEdit": {
+          "description": "Output only. Whether the requester can edit this file.",
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "canMoveItemWithinDrive": {
+          "description": "Output only. Whether the requester can move this item within its drive (My Drive or shared drive).",
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "canTrash": {
+          "description": "Output only. Whether the requester can move this file to the trash.",
+          "readOnly": true,
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "FolderProperties": {
+      "description": "Properties specific to folders.",
+      "properties": {
+        "syncFolder": {
+          "description": "Whether the folder is a synced folder from a computer or device.",
+          "type": "boolean"
+        },
+        "syncedComputer": {
+          "description": "Whether the folder is the root folder representing a synced computer or device.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "FollowUp": {
+      "description": "An open item on a file that needs the requesting user's attention (Drive \"Follow-up\"). Mirrors drive.ActionItem.",
+      "properties": {
+        "commentId": {
+          "description": "Output only. The id of the comment thread that needs attention. Matches CommentThread.commentId.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "type": {
+          "description": "Output only. The kind of follow-up.",
+          "enum": [
+            "TYPE_UNSPECIFIED",
+            "ASSIGNMENT",
+            "SUGGESTION"
+          ],
+          "readOnly": true,
+          "type": "string",
+          "x-google-enum-descriptions": [
+            "Unspecified type.",
+            "An open comment thread assigned to the requesting user.",
+            "An open suggested edit on a file the requesting user owns."
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "GmailSource": {
+      "description": "Represents a Gmail thread linked from Drive, such as a Drive Project source. Only the thread's owner can read it.",
+      "properties": {
+        "threadId": {
+          "description": "Output only. The thread ID in Gmail's server permanent ID format (for example, `thread-f:1570099985108600423`), which Gmail tools accept as is.",
+          "readOnly": true,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "ProjectMetadata": {
+      "description": "Metadata of a Drive Project container.",
+      "properties": {
+        "emoji": {
+          "description": "The project emoji.",
+          "type": "string"
+        },
+        "missionStatement": {
+          "deprecated": true,
+          "description": "Deprecated: use purpose.",
+          "type": "string"
+        },
+        "purpose": {
+          "description": "The project purpose.",
+          "type": "string"
+        },
+        "sources": {
+          "description": "Sources attached to the project.",
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ShortcutDetails": {
+      "description": "Details about the target of a shortcut file.",
+      "properties": {
+        "targetFileId": {
+          "description": "The ID of the file or folder that this shortcut points to. The target may no longer exist or be accessible to the requester.",
+          "type": "string"
+        },
+        "targetMimeType": {
+          "description": "The MIME type of the shortcut's target as recorded when the shortcut was created. It is not refreshed if the target later changes, and the target may no longer exist or be accessible to the requester.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "Source": {
+      "description": "A source attached to the project.",
+      "properties": {
+        "calendarSource": {
+          "$ref": "#/$defs/CalendarSource",
+          "description": "Output only. A Google Calendar event. Only one of the following fields should be set: this field, driveSource, gmailSource, urlSource, chatSource.",
+          "readOnly": true
+        },
+        "chatSource": {
+          "$ref": "#/$defs/ChatSource",
+          "description": "Output only. A Google Chat space. Only one of the following fields should be set: this field, driveSource, gmailSource, urlSource, calendarSource.",
+          "readOnly": true
+        },
+        "driveSource": {
+          "$ref": "#/$defs/DriveSource",
+          "description": "Output only. A Drive file or folder. Only one of the following fields should be set: this field, gmailSource, urlSource, chatSource, calendarSource.",
+          "readOnly": true
+        },
+        "gmailSource": {
+          "$ref": "#/$defs/GmailSource",
+          "description": "Output only. A Gmail thread. Only one of the following fields should be set: this field, driveSource, urlSource, chatSource, calendarSource.",
+          "readOnly": true
+        },
+        "sourceId": {
+          "description": "Server-assigned identifier of the source within the project.",
+          "type": "string"
+        },
+        "title": {
+          "description": "Human-readable title of the source, if applicable.",
+          "type": "string"
+        },
+        "urlSource": {
+          "$ref": "#/$defs/UrlSource",
+          "description": "Output only. A web page. Only one of the following fields should be set: this field, driveSource, gmailSource, chatSource, calendarSource.",
+          "readOnly": true
+        }
+      },
+      "type": "object"
+    },
+    "UrlSource": {
+      "description": "Represents a web page linked from Drive, such as a Drive Project source.",
+      "properties": {
+        "url": {
+          "description": "Output only. The URL of the web page.",
+          "readOnly": true,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "description": "Response to list files.",
+  "properties": {
+    "files": {
+      "description": "The list of files.",
+      "items": {
+        "$ref": "#/$defs/File"
+      },
+      "type": "array"
+    },
+    "nextPageToken": {
+      "description": "The next page token.",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

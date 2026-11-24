@@ -1,0 +1,49 @@
+$ gwscli drive list_recent_files --help --show-scopes
+Call this tool to find recent files for a user specified a sort order. Default sort order is `recency` if orderBy is not set or set to an unsupported value.
+
+Context window token management can be tuned via `snippetVerbosity` (default is `SnippetVerbosity.DETAILED`) or if only metadata is needed, use `excludeContentSnippets`.
+
+Supported sort orders are:
+
+ - `recency`: The most recent timestamp from the file's date-time fields.
+ - `lastModified`: The last time the file was modified by anyone.
+ - `lastModifiedByMe`: The last time the file was modified by the user.
+
+The default page size is 10. Utilize `nextPageToken` to paginate through the results.
+
+Usage:
+  gwscli drive list_recent_files [flags]
+
+Flags:
+      --orderBy string            The sort order for the files.
+      --pageSize int              The maximum number of files to return.
+      --pageToken string          The page token to use for pagination.
+      --snippetVerbosity string   Optional. Set to specify how verbose the snippets should be. Defaults to 'DETAILED' if not set. Must not be set if 'excludeContentSnippets' is 'true'.
+      --excludeContentSnippets    If 'true', the content snippet will be excluded from the response. Must not be set to 'true' if 'snippetVerbosity' is specified.
+      --includeExternalityState   Optional. When true, also returns 'externality_state' for each file. Defaults to 'false'.
+      --schema                    Print the output schema and structure, then exit.
+      --show-scopes               Show the OAuth scopes required for this command in the help output.
+
+Global Flags:
+  -h, --help                 Print help message
+      --oauth_token string   OAuth token to authenticate requests directly
+
+Output Format:
+  Format: JSON
+  Run with --schema to view full response structure and field definitions.
+
+OAuth Scopes:
+  All Supported Scopes:
+    - https://www.googleapis.com/auth/drive
+    - https://www.googleapis.com/auth/drive.appdata
+    - https://www.googleapis.com/auth/drive.file
+    - https://www.googleapis.com/auth/drive.meet.readonly
+    - https://www.googleapis.com/auth/drive.metadata
+    - https://www.googleapis.com/auth/drive.metadata.readonly
+    - https://www.googleapis.com/auth/drive.photos.readonly
+    - https://www.googleapis.com/auth/drive.readonly
+
+  Recommended Minimal Scopes:
+    - https://www.googleapis.com/auth/drive.file
+    - https://www.googleapis.com/auth/drive.metadata.readonly
+    - https://www.googleapis.com/auth/drive.readonly

@@ -1,0 +1,10 @@
+calendar 9
+chat 4
+docs 2
+drive 9
+gmail 23
+people 3
+sheets 6
+slides 4
+tasks 9
+total 69

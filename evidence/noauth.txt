@@ -1,0 +1,5 @@
+$ gwscli drive list_recent_files
+Error: failed to obtain token source: no valid cached token found. Run `gwscli auth login drive list_recent_files` before rerunning this command
+
+$ gwscli auth status
+No logged in user found.

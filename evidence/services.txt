@@ -1,0 +1,96 @@
+== calendar
+Available Commands:
+  create_event     Creates an event on the given calendar.
+  delete_event     Deletes an event on the given calendar.
+  get_event        Returns a single event on the given calendar.
+  list_calendars   Returns the calendars this user owns or has subscribed to. These are the calendars that show up in the calendar list if the user opens Google Calendar. This tool returns a subset of all accessible calendars; other calendars shared with the user can be accessed directly by their `calendarId` (email identifier) without subscribing to them first. Use this tool to resolve calendar identifying data (for example, 'my family calendar') into its corresponding `calendarId` (email identifier).
+  list_events      Returns events on the given calendar matching all specified constraints. Time constraints should not be specified unless requested by the user. For open-ended keyword or topic-based searches on the primary calendar, the search_events tool must be used instead.
+  respond_to_event Responds to an event on a calendar.
+  search_events    Searches events on the user's primary calendar using semantic search.
+  suggest_time     Suggests time periods across one or more calendars.
+  update_event     Updates an event on the given calendar.
+
+== chat
+Available Commands:
+  list_messages        Retrieves messages from a specified Google Chat conversation (Space, direct message (DM) or group DM) in Markdown format. Allows filtering by thread, time range, and number of messages. Additionally, the next page of messages can be retrieved to allow for more context. Private messages (messages only visible to a single user) are filtered out.
+  search_conversations Searches for Google Chat conversations to find conversation IDs. Named spaces are found by display name (`space_name_query`). Direct messages (DMs) and group chats are found only by participant email addresses (`participants`).
+  search_messages      Searches for Google Chat messages using keywords and filters returning them in Markdown format. Works across all spaces the user has access to, or can be scoped to a specific conversation.
+  send_message         Sends a Google Chat message to a conversation with Markdown formatting and optional citations.
+
+== docs
+Available Commands:
+  read_doc    This tool retrieves a JSON representation of the Google Doc given its document ID.
+  update_doc  Updates a document using batch update requests. It accepts a `documents.batchUpdate` request (as JSON).
+
+== drive
+Available Commands:
+  copy_file             Call this tool to copy an existing File in Google Drive.
+  create_file           Call this tool to create or upload a File to Google Drive.
+  download_file_content Call this tool to download the content of a Drive file as a base64 encoded string.
+  get_file_metadata     Call this tool to find general metadata about a user's Drive file.
+  get_file_permissions  Call this tool to list the permissions of a Drive File.
+  list_recent_files     Call this tool to find recent files for a user specified a sort order. Default sort order is `recency` if orderBy is not set or set to an unsupported value.
+  read_file_content     Call this tool to fetch a natural language representation of a known Drive file, and if specified, its comments.
+  search_files          Search for Drive files using a structured query (syntax: `query_term operator values`). Only terms in this list are supported.
+  upload_file_revision  Call this tool to upload a new content revision for an existing blob file in Google Drive.
+
+== gmail
+Available Commands:
+  apply_sensitive_message_label Prefer `trash_message` or `mark_message_spam` instead.
+  apply_sensitive_thread_label  Prefer `trash_thread` or `mark_thread_spam` instead.
+  create_draft                  Creates a new draft email in the authenticated user's Gmail account.
+  create_label                  Creates a new label in the authenticated user's Gmail account.
+  get_draft                     Retrieves a specific draft email from the authenticated user's Gmail account by ID, including its `viewUrl` for viewing and editing in the Gmail Web UI.
+  get_message                   Retrieves a specific email message from the authenticated user's Gmail account by its unique message ID, including its `viewUrl`.
+  get_thread                    Retrieves a specific email thread from the authenticated user's Gmail account, including its `viewUrl` and a list of its messages (each with their own `viewUrl`).
+  label_message                 Adds one or more labels to a specific message in the authenticated user's Gmail account.
+  label_thread                  Adds labels to an entire thread in the authenticated user's Gmail account. This operation affects all messages currently in the thread and any future messages added to it.
+  list_drafts                   Lists draft emails from the authenticated user's Gmail account, optionally filtered by a query string.
+  list_labels                   Lists all labels available in the authenticated user's Gmail account. Use this tool to discover the `labelId` and display `name` of each label in `labels` before calling `label_thread`, `unlabel_thread`, `label_message`, or `unlabel_message`. Note: the system labels, `DRAFT` and `SENT`, cannot be set on messages and are read only.
+  mark_message_spam             Marks a specific message as Spam in the authenticated user's Gmail account.
+  mark_thread_spam              Marks an entire thread as Spam in the authenticated user's Gmail account. This operation affects all messages currently in the thread.
+  search_threads                Lists email threads from the authenticated user's Gmail account.
+  trash_message                 Moves a specific message to the Trash (soft delete) in the authenticated user's Gmail account.
+  trash_thread                  Moves an entire thread to the Trash (soft delete) in the authenticated user's Gmail account. This operation affects all messages currently in the thread.
+  unlabel_message               Removes one or more labels from a specific message in the authenticated user's Gmail account. To find the message ID, use the `get_thread` tool. If unsure of a user label's ID, use the `list_labels` tool first to discover available labels and their IDs.
+  unlabel_thread                Removes labels from an entire thread in the authenticated user's Gmail account. This operation affects all messages currently in the thread.
+  unmark_message_spam           Unmarks a specific message as Spam in the authenticated user's Gmail account. This does not return the message to the Inbox; to move it to the Inbox, add the `INBOX` label separately.
+  unmark_thread_spam            Unmarks an entire thread as Spam in the authenticated user's Gmail account. This does not return the thread to the Inbox; to move it to the Inbox, add the `INBOX` label separately.
+  untrash_message               Removes a specific message from the Trash in the authenticated user's Gmail account. This does not return the message to the Inbox; to move it to the Inbox, add the `INBOX` label separately.
+  untrash_thread                Removes an entire thread from the Trash in the authenticated user's Gmail account. This does not return the thread to the Inbox; to move it to the Inbox, add the `INBOX` label separately.
+  update_message_labels         Atomically adds and/or removes labels from a specific message in the authenticated user's Gmail account.
+
+== people
+Available Commands:
+  get_user_profile        Get profile info about yourself (name and email).
+  search_contacts         Search user's contacts.
+  search_directory_people Search for people within your organization's Google Workspace directory. This feature is exclusively for Google Workspace accounts (used by businesses, schools, and other organizations) and is not available for personal Google accounts.
+
+== sheets
+Available Commands:
+  get_spreadsheet    Returns the spreadsheet content for the given spreadsheet.
+  get_values         Returns a range of values from a spreadsheet.
+  insert_dimension   Inserts rows or columns in a sheet at a particular index.
+  update_formulas    Sets formulas in a range of a spreadsheet.
+  update_spreadsheet Applies one or more updates to the spreadsheet.
+  update_values      Sets values in a range of a spreadsheet.
+
+== slides
+Available Commands:
+  read_presentation         Read a JSON representation of a Google Slides presentation.
+  read_slide_page           Read a JSON representation of a single slide/page from a Google Slides presentation.
+  read_slide_page_thumbnail Reads a thumbnail representation of a single slide page in a presentation, returning the thumbnail image URL along with its width and height dimensions.
+  update_presentation       Updates a presentation with set of batchUpdate requests.
+
+== tasks
+Available Commands:
+  complete_task   Marks a task as complete.
+  create_task     Creates a new task in a list. A task is a to-do or a reminder for an action the user needs to complete, usually with flexible timing. Tasks often start with a verb, e.g., "review", "prepare", "submit", "send". A task with a scheduled date and time also works as a reminder, and the user is notified at that time.
+  delete_task     Deletes an existing task. A deleted task can be restored with `undelete_task`, unless it is shared or the whole recurrence series was deleted. Deleting a task that is already deleted has no effect.
+  get_task        Returns a single task by its ID. Unlike `list_tasks`, completed and deleted tasks are always returned (indicated by `completed` and `deleted`).
+  list_task_lists Returns the task lists of the authenticated user.
+  list_tasks      Returns the user's tasks (to-dos and reminders). Unless `filter.taskListId` is set, tasks from all task lists are returned. By default, only uncompleted tasks are returned and deleted tasks are excluded. Tasks are not returned in the order shown in the Google Tasks apps; to get that order, sort tasks with the same task list and `parentTaskId` by `position`.
+  uncomplete_task Marks a task as uncomplete.
+  undelete_task   Restores a deleted task. Use `list_tasks` with `filter.includeDeleted` (or `get_task`) to find the ID of a deleted task. Only tasks that are not shared can be restored, and a single occurrence of a recurring task cannot be restored if the whole recurrence series was deleted. Tasks of a deleted task list cannot be restored either. Restoring a task that is not deleted has no effect.
+  update_task     Updates an existing task.
+

@@ -1,0 +1,12 @@
+# Captured 2026-11-24 on this machine (Linux x86_64), bash install.sh (script saved as install.sh.txt)
+Downloading gwscli (linux)...
+Installed gwscli to /home/xbill/.local/bin/gwscli
+Next: read /home/xbill/.gwscli/README.md to set up authentication.
+$ ls -la ~/.local/bin/gwscli
+-rwxr-xr-x 1 xbill xbill 11673751 Nov 24 12:31 /home/xbill/.local/bin/gwscli
+$ file ~/.local/bin/gwscli
+ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, stripped
+$ sha256sum ~/.local/bin/gwscli
+443a4905c521df18484805fe6e789c02abf79435b4ac8fea3219eb3a3115b1d5
+$ ls ~/.gwscli
+NOTICES.txt  README.md
