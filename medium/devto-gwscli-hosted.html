@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Install and Use the Google Workspace CLI: gwscli on Linux, From curl to Agent Skills</title>
+  <meta name="description" content="A step by step guide to the generally available Google Workspace CLI: one-line install, command discovery across nine Workspace services, incremental OAuth sign-in, JSON output, and the agent skill it ships for Claude Code and other agents." />
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+    body{font-family:-apple-system,'Segoe UI',Roboto,'Liberation Sans',Arial,sans-serif;
+         font-size:18px;line-height:1.58;max-width:42em;color:#242424;}
+    h1,h2,h3,h4{font-weight:700;line-height:1.25;margin-top:1.8em;}
+    h4{font-size:1.25em;}
+    img{max-width:100%;height:auto;display:block;margin:1.6em 0;}
+    pre{background:#f7f7f7;border:1px solid #e6e6e6;border-radius:4px;
+        padding:12px 14px;overflow-x:auto;font-size:14px;line-height:1.45;}
+    code{font-family:'Liberation Mono',Menlo,Consolas,monospace;}
+    :not(pre)>code{background:#f2f2f2;padding:1px 5px;border-radius:3px;font-size:.9em;}
+    blockquote{border-left:3px solid #ddd;margin-left:0;padding-left:1em;color:#555;}
+    hr{border:0;border-top:1px solid #e6e6e6;margin:2.4em 0;}
+  </style>
+</head>
+<body>
+<p>This article provides a step by step guide to installing and using
+the Google Workspace CLI, <code>gwscli</code>, on a Linux machine.
+Google made the CLI and the Workspace MCP servers generally available on
+November 24, 2026. The CLI gives a terminal, a script or an AI agent one
+command, <code>gwscli &lt;service&gt; &lt;action&gt;</code>, for Gmail,
+Drive, Docs, Sheets, Slides, Calendar, Chat, Tasks and People.</p>
+<figure><img src="https://raw.githubusercontent.com/xbill9/gwscli/main/medium/img/devto-cover.c0c85962.jpg" alt="Install and Use the Google Workspace CLI: gwscli on Linux, From curl to Agent Skills" /></figure>
+<p><a
+href="https://github.com/xbill9/gwscli">https://github.com/xbill9/gwscli</a></p>
+<p><strong>One curl command installs a single static binary, and the CLI
+then describes itself: 69 actions across nine services, each with its
+own help text, required OAuth scopes and JSON output schema, all
+readable before you sign in.</strong> Sign-in is incremental, so an
+agent can be granted read access to Drive recent files and nothing
+else.</p>
+<hr />
+<h4 id="what-is-the-workspace-cli">What Is the Workspace CLI?</h4>
+<p><code>gwscli</code> is a command-line client that reaches Google
+Workspace through the Workspace MCP services. Each command group maps to
+one MCP API, which fronts the regular Workspace API:</p>
+<p><img src="https://raw.githubusercontent.com/xbill9/gwscli/main/medium/img/devto-gwscli-table-1.png"
+alt="Table: Command group, MCP API, Underlying API" /></p>
+<p>The mapping comes from the README the installer drops in
+<code>~/.gwscli/README.md</code>. The action names match the tool names
+of the Workspace MCP servers, such as
+<code>drive list_recent_files</code> and
+<code>gmail search_threads</code>, so a workflow written against the CLI
+reads the same as one written against MCP.</p>
+<p>The same servers can be connected to an agent directly over MCP.
+Earlier articles in this series set them up for each agent:</p>
+<ul>
+<li><a
+href="https://dev.to/gde/mcp-configuration-for-google-workspace-with-gemini-cli-3nd2">MCP
+Configuration for Google Workspace with Gemini CLI</a></li>
+<li><a
+href="https://dev.to/gde/mcp-configuration-for-google-workspace-with-antigravity-cli-3f34">MCP
+Configuration for Google Workspace with Antigravity CLI</a></li>
+<li><a
+href="https://dev.to/gde/mcp-configuration-for-google-workspace-with-claude-code-11om">MCP
+Configuration for Google Workspace with Claude Code</a></li>
+<li><a
+href="https://dev.to/gde/debugging-claude-code-and-google-mcp-quirks-8bd">Debugging
+Claude Code and Google MCP Quirks</a></li>
+<li><a
+href="https://dev.to/gde/universal-search-mcp-for-google-workspace-with-claude-code-3ilm">Universal
+Search MCP for Google Workspace with Claude Code</a></li>
+</ul>
+<hr />
+<h4 id="at-this-point-you-should-have">At This Point You Should
+Have…</h4>
+<ul>
+<li>A Linux or macOS machine with <code>bash</code> and
+<code>curl</code>, or Windows with PowerShell, on x86_64 or ARM64</li>
+<li>A Google Cloud project you can enable APIs in, and
+<code>gcloud</code> if you want to enable them from the terminal</li>
+<li>A browser on the same machine as the terminal, for the one-time
+sign-in</li>
+</ul>
+<hr />
+<h4 id="step-1--read-the-installer-then-run-it">Step 1 — Read the
+Installer, Then Run It</h4>
+<p>The documented install is a pipe into bash. The script is short, so
+download it first and read it:</p>
+<pre class="shell"><code>mkdir -p ~/dl &amp;&amp; cd ~/dl
+curl -fsSL https://dl.google.com/workspace-cli/install.sh -o install.sh
+wc -l install.sh
+97 install.sh</code></pre>
+<p>It detects the platform (<code>linux</code>,
+<code>linux_arm64</code>, <code>macos_silicon</code>,
+<code>macos_intel</code>), downloads the binary from
+<code>dl.google.com/workspace-cli/&lt;platform&gt;/gwscli</code> into a
+temporary file inside the install directory, runs
+<code>gwscli version</code> on it, and only then moves it into place. On
+macOS it also clears the quarantine attribute. It writes nothing outside
+<code>~/.local/bin</code> and <code>~/.gwscli</code>.</p>
+<pre class="shell"><code>bash install.sh
+Downloading gwscli (linux)...
+Installed gwscli to /home/xbill/.local/bin/gwscli
+Next: read /home/xbill/.gwscli/README.md to set up authentication.</code></pre>
+<p>If <code>~/.local/bin</code> is not on your <code>PATH</code>, the
+script prints the <code>export</code> line to add. Set
+<code>GWSCLI_INSTALL_DIR</code> before running it to install somewhere
+else.</p>
+<p>On Windows the same job is one PowerShell line:</p>
+<pre class="powershell"><code>iex ((New-Object Net.WebClient).DownloadString(&#39;https://dl.google.com/workspace-cli/install.ps1&#39;))</code></pre>
+<hr />
+<h4 id="step-2--check-the-binary">Step 2 — Check the Binary</h4>
+<pre class="shell"><code>gwscli version
+file ~/.local/bin/gwscli
+ls ~/.gwscli
+gwscli version 1.0.6.1026726559
+/home/xbill/.local/bin/gwscli: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, stripped
+NOTICES.txt  README.md</code></pre>
+<p>The binary is 11,673,751 bytes and statically linked, so there is no
+runtime, package manager or virtual environment to set up. The binary
+holds the list of nine services and the <code>auth</code>,
+<code>skills</code> and <code>logging</code> commands. Each service's
+actions are fetched from its MCP server at run time, so new tools appear
+without a new binary (Step 3). Re-run the installer for changes to the
+binary itself, such as sign-in or the bundled skill.</p>
+<hr />
+<h4 id="step-3--discover-the-services">Step 3 — Discover the
+Services</h4>
+<pre class="shell"><code>gwscli --help
+Available Services:
+  calendar    Schedule meetings, check availability, and manage events
+  chat        Send messages, read conversations, and manage Chat spaces
+  docs        Read and edit Google Docs documents
+  drive       Search, upload, download, and organize Drive files
+  gmail       Search emails, read threads, manage labels, and create drafts
+  people      Search directory profiles and view personal contacts
+  sheets      Read, write, format, and analyze Sheets data
+  slides      Read and edit Slides presentations
+  tasks       Create, read, and manage Google Tasks and task lists
+ 
+Utility Commands:
+  auth        Sign in, sign out, and manage authentication
+  logging     Manage telemetry and usage logging
+  privacy     Print the Privacy Policy URL
+  skills      Discover and manage agent skills
+  terms       Print the Terms of Service URL
+  version     Print the version</code></pre>
+<p><code>gwscli &lt;service&gt; --help</code> lists each service's
+actions. Counted from that output on November 24, 2026:</p>
+<p><img src="https://raw.githubusercontent.com/xbill9/gwscli/main/medium/img/devto-gwscli-table-2.png"
+alt="Table: Service, Actions, Examples" /></p>
+<p>Gmail has a create-draft action and no send action, so mail written
+by an agent waits in Drafts for a person to send it.</p>
+<hr />
+<h4 id="step-4--read-an-action-before-running-it">Step 4 — Read an
+Action Before Running It</h4>
+<p>Every action has three views that work with no sign-in at all.</p>
+<p><code>--help</code> gives the description, the flags and the output
+format:</p>
+<pre class="shell"><code>gwscli drive list_recent_files --help
+The default page size is 10. Utilize `nextPageToken` to paginate through the results.
+ 
+Usage:
+  gwscli drive list_recent_files [flags]
+ 
+Flags:
+      --excludeContentSnippets    If &#39;true&#39;, the content snippet will be excluded from the response. ...
+      --includeExternalityState   Optional. When true, also returns &#39;externality_state&#39; for each file. Defaults to &#39;false&#39;.
+      --orderBy string            The sort order for the files.
+      --pageSize int              The maximum number of files to return.
+      --pageToken string          The page token to use for pagination.
+      --snippetVerbosity string   Optional. Set to specify how verbose the snippets should be. ...
+      --schema                    Print the output schema and structure, then exit.
+      --show-scopes               Show the OAuth scopes required for this command in the help output.
+ 
+Output Format:
+  Format: JSON
+  Run with --schema to view full response structure and field definitions.</code></pre>
+<p><code>--show-scopes</code> adds the OAuth scopes the action can use,
+and the smallest set it needs:</p>
+<pre class="shell"><code>gwscli drive list_recent_files --help --show-scopes
+OAuth Scopes:
+  All Supported Scopes:
+    - https://www.googleapis.com/auth/drive
+    - https://www.googleapis.com/auth/drive.appdata
+    - https://www.googleapis.com/auth/drive.file
+    - https://www.googleapis.com/auth/drive.meet.readonly
+    - https://www.googleapis.com/auth/drive.metadata
+    - https://www.googleapis.com/auth/drive.metadata.readonly
+    - https://www.googleapis.com/auth/drive.photos.readonly
+    - https://www.googleapis.com/auth/drive.readonly
+ 
+  Recommended Minimal Scopes:
+    - https://www.googleapis.com/auth/drive.file
+    - https://www.googleapis.com/auth/drive.metadata.readonly
+    - https://www.googleapis.com/auth/drive.readonly</code></pre>
+<p><code>--schema</code> prints the JSON Schema of the response and
+exits without calling Google:</p>
+<pre class="shell"><code>gwscli drive list_recent_files --schema | head -5
+{
+  &quot;$defs&quot;: {
+    &quot;CalendarSource&quot;: {
+      &quot;description&quot;: &quot;Represents a Google Calendar event linked from Drive, such as a Drive Project source.&quot;,
+      &quot;properties&quot;: {},</code></pre>
+<p>The actions, flags and schemas come from the MCP server each time the
+CLI runs. With the network blocked, the service list still prints and
+every service command fails:</p>
+<pre class="shell"><code>HTTPS_PROXY=http://127.0.0.1:9 gwscli drive --help
+Warning: failed to load MCP tools for server &quot;drive&quot;: failed listing tools on server &quot;drive&quot;: Post &quot;https://drivemcp.googleapis.com/mcp/v1&quot;: proxyconnect tcp: dial tcp 127.0.0.1:9: connect: connection refused
+Error: service &quot;drive&quot; is currently unavailable; failed to generate commands from the server.</code></pre>
+<p>So the action count in the table above is a snapshot of the servers
+on one day. A tool Google adds to an MCP server shows up in the CLI on
+the next run, with no upgrade.</p>
+<hr />
+<h4 id="step-5--install-the-agent-skill">Step 5 — Install the Agent
+Skill</h4>
+<p>The CLI ships its own agent skill: a <code>SKILL.md</code> that
+teaches an agent the sign-in rules, the headless safety rules and the
+command layout.</p>
+<pre class="shell"><code>gwscli skills list
+gwscli skills install --dir ./skills
+wc -l skills/gwscli/SKILL.md
+gwscli
+Installing skills to ./skills...
+318 skills/gwscli/SKILL.md</code></pre>
+<p>Point <code>--dir</code> at your agent's skills directory:
+<code>~/.claude/skills</code> for Claude Code, or
+<code>~/.agents/skills</code>, the README's example for other agents.
+Restart the agent after installing. To update later,
+<code>--overwrite</code> replaces the installed copy; installing to a
+temporary directory and running <code>diff -ru</code> first shows what
+changes.</p>
+<hr />
+<h4 id="step-6--create-an-oauth-client">Step 6 — Create an OAuth
+Client</h4>
+<p><code>gwscli</code> signs in with an OAuth client from your own
+Google Cloud project. Until one exists, every data command stops with a
+clear message:</p>
+<pre class="shell"><code>gwscli auth status
+gwscli drive list_recent_files
+No logged in user found.
+Error: failed to obtain token source: no valid cached token found. Run `gwscli auth login drive list_recent_files` before rerunning this command</code></pre>
+<p>The fastest route is the Cloud console's personal-mode shortcut,
+linked from the README:</p>
+<pre class="text"><code>https://console.cloud.google.com/auth/overview/personal?apis=ws,wsmcp,tasksmcp&amp;clientType=desktop&amp;isAgent=true</code></pre>
+<p>It creates or selects a project, enables the Workspace and MCP APIs,
+and pre-selects <strong>Desktop app</strong> and <strong>Use this client
+for an AI-powered agent</strong>. Download the client JSON.</p>
+<p>For an existing project, enable the APIs yourself:</p>
+<pre class="shell"><code>gcloud services enable --project=PROJECT_ID \
+    gmail.googleapis.com drive.googleapis.com docs.googleapis.com \
+    sheets.googleapis.com slides.googleapis.com calendar-json.googleapis.com \
+    chat.googleapis.com people.googleapis.com tasks.googleapis.com
+ 
+gcloud services enable --project=PROJECT_ID \
+    gmailmcp.googleapis.com drivemcp.googleapis.com docsmcp.googleapis.com \
+    sheetsmcp.googleapis.com slidesmcp.googleapis.com \
+    calendarmcp.googleapis.com chatmcp.googleapis.com \
+    tasksmcp.googleapis.com</code></pre>
+<p>Then create the client in the console with these three settings:</p>
+<ul>
+<li><strong>Application type: Desktop app.</strong> The CLI listens on a
+random local port for the OAuth callback, and only the Desktop type
+allows that.</li>
+<li><strong>Use this client for an AI-powered agent: checked.</strong>
+This marks the client as an agent client, which Google's November 24
+announcement makes the way agents identify themselves.</li>
+<li><strong>Test users:</strong> with an External consent screen, add
+your own address or consent is refused.</li>
+</ul>
+<hr />
+<h4 id="step-7--register-the-client-and-sign-in">Step 7 — Register the
+Client and Sign In</h4>
+<pre class="shell"><code>gwscli auth setup --oauth_client_file=$HOME/Downloads/client_secret.json</code></pre>
+<p><code>auth setup</code> signs you out before saving and asks for a
+<code>Y</code> on stdin, so it replaces any tokens granted earlier.</p>
+<p>Sign-in takes the commands or services you want to allow, and
+requests only their scopes:</p>
+<pre class="shell"><code>gwscli auth login drive list_recent_files                 # one action
+gwscli auth login &quot;chat search_messages&quot; &quot;gmail search_threads&quot;   # several actions
+gwscli auth login gmail                                   # a whole service
+gwscli auth login chat --bundle=readonly                  # read-only scopes for a service
+gwscli auth login                                         # everything</code></pre>
+<p>Each prints a URL. Open it in the browser on the same machine,
+approve, and the CLI caches the token. <code>gwscli auth status</code>
+lists the granted scopes and <code>gwscli auth refresh</code> renews the
+token.</p>
+<p>A read-only sign-in across six services:</p>
+<pre class="shell"><code>gwscli auth login --bundle=readonly drive calendar gmail docs sheets tasks
+gwscli auth status
+Granted the following scopes:
+  - https://www.googleapis.com/auth/calendar.events.readonly
+  - https://www.googleapis.com/auth/calendar.readonly
+  - https://www.googleapis.com/auth/documents.readonly
+  - https://www.googleapis.com/auth/drive.metadata.readonly
+  - https://www.googleapis.com/auth/drive.readonly
+  - https://www.googleapis.com/auth/gmail.labels.readonly
+  - https://www.googleapis.com/auth/gmail.messages.readonly
+  - https://www.googleapis.com/auth/gmail.readonly
+  - https://www.googleapis.com/auth/spreadsheets.readonly
+  - https://www.googleapis.com/auth/tasks.readonly</code></pre>
+<hr />
+<h4 id="mag_right-tip-the-read-only-bundle-leaves-out-drivefile">🔎 Tip:
+The Read-Only Bundle Leaves Out <code>drive.file</code></h4>
+<p>The CLI checks a command's <strong>Recommended Minimal
+Scopes</strong> before calling Google, and both
+<code>drive list_recent_files</code> and <code>drive search_files</code>
+list <code>drive.file</code> there. <code>--bundle=readonly</code>
+grants <code>drive.readonly</code> and
+<code>drive.metadata.readonly</code> only, so both commands stop:</p>
+<pre class="shell"><code>gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets
+Error: failed to obtain token source: no valid cached token found. Run `gwscli auth login drive list_recent_files` before rerunning this command</code></pre>
+<p>The bundle filters out <code>drive.file</code> even when Drive
+commands are named next to it. Sign in per command, without
+<code>--bundle</code>. Logins add to the cached grant, so earlier scopes
+stay:</p>
+<pre class="shell"><code>gwscli auth login &quot;drive list_recent_files&quot; &quot;drive search_files&quot;</code></pre>
+<p><code>drive.file</code> covers only files the app creates or opens,
+so the grant stays narrow.
+<code>gwscli auth login --print-scope-only &lt;commands&gt;</code>
+prints the scopes a sign-in will request, without opening anything. A
+sign-in that is not approved within five minutes ends with
+<code>Error: authentication timed out after 5m0s</code>.</p>
+<hr />
+<h4 id="step-8--run-commands-and-parse-the-output">Step 8 — Run Commands
+and Parse the Output</h4>
+<p>Lists and records come back as JSON on stdout, so they pipe into
+<code>jq</code>. Two counts from a signed-in account:</p>
+<pre class="shell"><code>gwscli gmail list_labels | jq -r &#39;.labels | group_by(.labelType)[] | &quot;\(.[0].labelType) \(length)&quot;&#39;
+SYSTEM 14
+USER 29
+gwscli drive list_recent_files --pageSize 5 --excludeContentSnippets | jq -r &#39;.files[].mimeType&#39; | sort | uniq -c
+      2 application/vnd.google-apps.document
+      3 application/vnd.google-apps.presentation</code></pre>
+<p>Each response has a fixed top level. Read with
+<code>jq 'keys'</code>, arrays shown as their length:</p>
+<p><img src="https://raw.githubusercontent.com/xbill9/gwscli/main/medium/img/devto-gwscli-table-3.png"
+alt="Table: Command, Top level, Fields per item" /></p>
+<p>Gmail search returns 20 threads per page by default. Each response
+returned in 0.55 to 2.19 seconds on this machine. Every Drive file and
+Gmail thread carries a <code>viewUrl</code>, so an agent can hand back a
+link to the item.</p>
+<p>Document content, such as <code>docs read_doc</code>, comes back as
+Markdown text, which goes to a file or a pager. Utility commands print
+plain text.</p>
+<hr />
+<h4 id="mag_right-tip-the-oauth-clients-project-decides-access">🔎 Tip:
+The OAuth Client's Project Decides Access</h4>
+<p>The Google Cloud project that owns the OAuth client is the project
+Google checks, whatever <code>gcloud config</code> says. On November 24,
+2026, the same account and the same scopes gave two different
+results:</p>
+<p><img src="https://raw.githubusercontent.com/xbill9/gwscli/main/medium/img/devto-gwscli-table-4.png"
+alt="Table: OAuth client in, Calendar, Gmail, Tasks, Drive" /></p>
+<p>The personal-mode project's refusal reads:</p>
+<pre class="text"><code>Access to this tool requires that your Google Cloud project (&lt;project-number&gt;) is enrolled in the Google Workspace Developer Preview Program. Please see https://developers.google.com/workspace/preview</code></pre>
+<p>The announcement gives the rollout as two weeks. Until it reaches a
+project, create the Desktop client in a project that is enrolled in the
+Developer Preview, at
+<code>console.cloud.google.com/auth/clients/create?project=&lt;project-id&gt;</code>.
+That project also needs the nine <code>*mcp</code> APIs from Step 6
+enabled.</p>
+<hr />
+<h4 id="step-9--bring-your-own-token">Step 9 — Bring Your Own Token</h4>
+<p>When something else already manages tokens, such as a CI job or a
+service that does its own OAuth, skip <code>setup</code> and
+<code>login</code> and pass the token on each call:</p>
+<pre class="shell"><code>gwscli --oauth_token=&quot;$ACCESS_TOKEN&quot; calendar list_events</code></pre>
+<p>The token must already carry the action's scopes, which
+<code>--show-scopes</code> lists. The CLI does not refresh it in this
+mode. A token on the command line also lands in shell history and the
+process list, so read it from a variable that a secret store fills.</p>
+<hr />
+<h4 id="mag_right-tip-sign-in-where-the-browser-is">🔎 Tip: Sign In
+Where the Browser Is</h4>
+<p><code>gwscli auth login</code> waits for a redirect to
+<code>http://127.0.0.1:&lt;port&gt;/</code>. On a headless VM, in Cloud
+Shell or over SSH, that redirect never reaches the CLI. Run the login on
+your own machine, or forward the port the command prints:</p>
+<pre class="shell"><code>ssh -L &lt;port&gt;:127.0.0.1:&lt;port&gt; user@host</code></pre>
+<p>The README tells agents the same thing: <code>auth login</code> and
+<code>auth setup</code> are interactive and hang in a script, so an
+agent that hits an auth error should stop and ask its user to sign
+in.</p>
+<hr />
+<h4 id="mag_right-tip-telemetry-is-on-by-default">🔎 Tip: Telemetry Is
+On by Default</h4>
+<pre class="shell"><code>gwscli logging status
+Telemetry logging is enabled.</code></pre>
+<p><code>gwscli logging off</code> turns it off.
+<code>gwscli privacy</code> and <code>gwscli terms</code> print the
+policy URLs.</p>
+<hr />
+<h4 id="mag_right-tip-treat-workspace-content-as-untrusted-input">🔎
+Tip: Treat Workspace Content as Untrusted Input</h4>
+<p>The README opens with a prompt-injection warning. An agent that reads
+mail or documents from outside your organisation can meet hidden
+instructions in them, and with write scopes it can act on them. Grant
+the narrowest sign-in the task needs, prefer
+<code>--bundle=readonly</code>, and review what the agent does.</p>
+<hr />
+<h4 id="what-do-the-new-usage-tiers-mean-for-the-cli">What Do the New
+Usage Tiers Mean for the CLI?</h4>
+<p>The November 24, 2026 Workspace Updates post puts the CLI and the MCP
+servers under the same usage tiers as the Workspace APIs, starting with
+Gmail, Drive and Calendar:</p>
+<p><img src="https://raw.githubusercontent.com/xbill9/gwscli/main/medium/img/devto-gwscli-table-5.png"
+alt="Table: Tier, Cost, Who it is for" /></p>
+<p>Two dates matter for anything built on Workspace:</p>
+<ul>
+<li><strong>February 1, 2027:</strong> AI agents must reach Workspace
+data through MCP, and technical enforcement starts. The CLI already goes
+through the MCP services.</li>
+<li><strong>April 1, 2027:</strong> Scaled tier billing begins. A
+project over Standard limits that takes no action may be throttled.</li>
+</ul>
+<p>Admins control agent access in the Admin console under
+<strong>Security &gt; API Controls</strong>. The post gives no numeric
+quotas; they are published separately.</p>
+<hr />
+<h4 id="compare-and-contrast-the-two-ways-to-authenticate">Compare and
+Contrast: The Two Ways to Authenticate</h4>
+<p><img src="https://raw.githubusercontent.com/xbill9/gwscli/main/medium/img/devto-gwscli-table-6.png"
+alt="Table: Own OAuth client (auth setup + auth login), Own token (--oauth_token)" /></p>
+<hr />
+<h4 id="so-which-one">So, Which One?</h4>
+<p>For a developer laptop or a local agent such as Claude Code, use your
+own OAuth client and sign in per action. The consent screen then lists
+exactly what the agent can touch, and <code>gwscli auth logout</code>
+revokes it. Use <code>--oauth_token</code> when another system already
+owns the token lifecycle.</p>
+<hr />
+<h4 id="cleaning-up">Cleaning Up</h4>
+<pre class="shell"><code>gwscli auth logout     # revoke the cached token and delete it
+gwscli auth reset      # also forget the registered OAuth client
+rm ~/.local/bin/gwscli &amp;&amp; rm -r ~/.gwscli</code></pre>
+<p>Granted access is also listed at myaccount.google.com/connections,
+and the OAuth client can be deleted from the Credentials page of the
+Cloud project.</p>
+<hr />
+<h4 id="summary">Summary</h4>
+<p>The goal of this article was to install the Google Workspace CLI and
+show how to use it from a terminal and from an agent. The key to the
+solution was the CLI's own discovery: <code>--help</code>,
+<code>--show-scopes</code> and <code>--schema</code> describe every
+action before any sign-in, and sign-in then grants only the scopes those
+actions need. The results were:</p>
+<ul>
+<li>🟢 Install is one <code>curl</code> and <code>bash</code>, and
+produces a single static binary of 11,673,751 bytes (11.7 MB) on Linux
+x86_64. The script is 97 lines and readable before running.</li>
+<li>🟢 On November 24, 2026 the CLI listed 69 actions across nine
+services, plus <code>auth</code>, <code>skills</code>,
+<code>logging</code>, <code>privacy</code>, <code>terms</code> and
+<code>version</code>.</li>
+<li>🟢 Help, scopes and response schemas all work with no account signed
+in.</li>
+<li>🟢 <code>gwscli skills install</code> adds a ready-made agent skill
+for Claude Code or any agent that reads <code>SKILL.md</code>
+files.</li>
+<li>⚠️ Sign-in needs a Desktop OAuth client marked for AI agents and a
+browser on the same machine; over SSH, forward the callback port.</li>
+<li>⚠️ <code>--bundle=readonly</code> omits <code>drive.file</code>,
+which Drive's list and search commands require; sign in per command
+instead.</li>
+<li>🟢 Signed in with an OAuth client in a Developer Preview project,
+Drive, Calendar, Gmail and Tasks all returned JSON, each in 0.55 to 2.19
+seconds.</li>
+<li>❌ With a client in a new personal-mode project on launch day,
+Calendar, Gmail and Tasks asked for Developer Preview enrollment and
+Drive returned a permission error.</li>
+<li>⚠️ Telemetry is on until <code>gwscli logging off</code>.</li>
+<li>🟢 Actions, flags and schemas load from the MCP servers on every
+run, so new tools need no upgrade. Re-run the installer only for changes
+to the binary itself.</li>
+</ul>
+<p>Scope: one Linux x86_64 machine, <code>gwscli</code> version
+1.0.6.1026726559, one Google Workspace account, OAuth clients in two
+Google Cloud projects (a new personal-mode project and a project
+enrolled in the Workspace Developer Preview), run once on November 24,
+2026, the day of the announcement. Every command shown with output was
+run, and the response tables list field names and counts only. Sheets,
+Docs and the token mode in Step 9 come from the help text and README and
+were not run. Usage-tier facts are from Google's Workspace Updates post
+of the same date.</p>
+<p>The strategy for using the Google Workspace CLI was validated with an
+incremental step by step approach.</p>
+<hr />
+<h4 id="references">References</h4>
+<ul>
+<li>Google Workspace CLI guide: <a
+href="https://developers.google.com/workspace/guides/workspace-cli">https://developers.google.com/workspace/guides/workspace-cli</a></li>
+<li>Workspace Updates, MCP servers, CLI and usage tiers: <a
+href="https://workspaceupdates.googleblog.com/2026/11/mcp-servers-cli-standardized-usage-tiers-now-available.html">https://workspaceupdates.googleblog.com/2026/11/mcp-servers-cli-standardized-usage-tiers-now-available.html</a></li>
+<li>Create OAuth client credentials: <a
+href="https://developers.google.com/workspace/guides/create-credentials">https://developers.google.com/workspace/guides/create-credentials</a></li>
+<li>MCP Configuration for Google Workspace with Gemini CLI: <a
+href="https://dev.to/gde/mcp-configuration-for-google-workspace-with-gemini-cli-3nd2">https://dev.to/gde/mcp-configuration-for-google-workspace-with-gemini-cli-3nd2</a></li>
+<li>MCP Configuration for Google Workspace with Antigravity CLI: <a
+href="https://dev.to/gde/mcp-configuration-for-google-workspace-with-antigravity-cli-3f34">https://dev.to/gde/mcp-configuration-for-google-workspace-with-antigravity-cli-3f34</a></li>
+<li>MCP Configuration for Google Workspace with Claude Code: <a
+href="https://dev.to/gde/mcp-configuration-for-google-workspace-with-claude-code-11om">https://dev.to/gde/mcp-configuration-for-google-workspace-with-claude-code-11om</a></li>
+<li>Debugging Claude Code and Google MCP Quirks: <a
+href="https://dev.to/gde/debugging-claude-code-and-google-mcp-quirks-8bd">https://dev.to/gde/debugging-claude-code-and-google-mcp-quirks-8bd</a></li>
+<li>Universal Search MCP for Google Workspace with Claude Code: <a
+href="https://dev.to/gde/universal-search-mcp-for-google-workspace-with-claude-code-3ilm">https://dev.to/gde/universal-search-mcp-for-google-workspace-with-claude-code-3ilm</a></li>
+<li>Repository for this article: <a
+href="https://github.com/xbill9/gwscli">https://github.com/xbill9/gwscli</a></li>
+</ul>
+</body>
+</html>
